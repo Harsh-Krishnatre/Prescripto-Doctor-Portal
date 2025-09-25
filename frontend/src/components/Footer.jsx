@@ -1,6 +1,10 @@
 import { assets } from '../assets/assets';
+import {useNavigate }from 'react-router-dom'
 
 const Footer = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="container">
       <div className='grid grid-cols-1 md:grid-cols-2  gap-4 mb-6 mx-6 md:mx-10'>
@@ -20,9 +24,9 @@ const Footer = () => {
           <p className='font-medium'>COMPANY</p>
           <div className='flex flex-col md:flex-wrap items-center md:items-start gap-2 text-gray-600 sm:text-base md:text-sm pt-5 cursor-pointer'>
             <a href="#">Home</a>
-            <a>About us</a>
-            <a>Contact us</a>
-            <a>Privacy policy</a>
+            <a onClick={()=>navigate('/about')}>About us</a>
+            <a onClick={()=>navigate('/contact')}>Contact us</a>
+            <a onClick={()=>navigate('/workinprogress')}>Privacy policy</a>
           </div>
         </div>
         <div className='flex flex-col items-center md:items-start '>
