@@ -7,9 +7,9 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(false);
 
-  const Logout = () =>{
+  const Logout = () => {
     setToken(false);
-  }
+  };
 
   return (
     <div className="flex items-center  justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
@@ -17,7 +17,10 @@ const Navbar = () => {
         className="w-44 cursor-pointer "
         src={assets.logo}
         alt="Prescripto"
-        onClick={()=>{navigate('/'); scrollTo(0,0)}}
+        onClick={() => {
+          navigate("/");
+          scrollTo(0, 0);
+        }}
       />
       <ul className="hidden md:flex items-start gap-5 font-md">
         <NavLink to="/">
@@ -40,13 +43,32 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {token ? (
           <div className="flex items-center gap-2 cursor-pointer group relative">
-            <img src={assets.profile_pic} alt="profile" className="w-8 rounded-full"/>
-            <img src={assets.dropdown_icon} alt="" className="w-2.5 "/>
+            <img
+              src={assets.profile_pic}
+              alt="profile"
+              className="w-8 rounded-full"
+            />
+            <img src={assets.dropdown_icon} alt="" className="w-2.5 " />
             <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
               <div className="min-w-50 bg-stone-100 rounded flex flex-col gap-4 p-4">
-                <p onClick={()=>navigate('my-profile')} className="hover:text-black cursor-pointer">My Profile</p>
-                <p onClick={()=>navigate('my-appointments')} className="hover:text-black cursor-pointer">My Appointments</p>
-                <p onClick={()=>Logout()}className="hover:text-black cursor-pointer">Logout</p>
+                <p
+                  onClick={() => navigate("my-profile")}
+                  className="hover:text-black cursor-pointer"
+                >
+                  My Profile
+                </p>
+                <p
+                  onClick={() => navigate("my-appointments")}
+                  className="hover:text-black cursor-pointer"
+                >
+                  My Appointments
+                </p>
+                <p
+                  onClick={() => Logout()}
+                  className="hover:text-black cursor-pointer"
+                >
+                  Logout
+                </p>
               </div>
             </div>
           </div>
@@ -59,6 +81,54 @@ const Navbar = () => {
             create account
           </button>
         )}
+        <img
+          onClick={() => {
+            setShowMenu(true), console.log(showMenu);
+          }}
+          className="w-6 md:hidden cursor-pointer"
+          src={assets.menu_icon}
+          alt=""
+        />
+        {/* mobile menu */}
+        <div
+          className={`
+          md:hidden fixed top-0 right-0 h-full w-full max-w-xs bg-white z-40
+          transition-transform duration-300 ease-in-out
+          ${showMenu ? "translate-x-0" : "translate-x-full"}
+        `}
+        >
+          <div className="flex items-center justify-between px-5 py-6">
+            <img className="w-36" src={assets.logo} alt="" />
+            <img
+              className="w-7"
+              onClick={() => setShowMenu(false)}
+              src={assets.cross_icon}
+              alt=""
+            />
+          </div>
+          <ul className="flex flex-col items-center gap-2 mt-5 px-6 text-lg font-medium">
+            <NavLink to="/" onClick={() => setShowMenu(false)}>
+              <li className="py-1">
+                <p className="px-4 py-3 rounded inline-block ">HOME</p>
+              </li>
+            </NavLink>
+            <NavLink to="/doctors" onClick={() => setShowMenu(false)}>
+              <li className="py-1">
+                <p className="px-4 py-3 rounded inline-block ">ALL DOCTORS</p>
+              </li>
+            </NavLink>
+            <NavLink to="/about" onClick={() => setShowMenu(false)}>
+              <li className="py-1">
+                <p className="px-4 py-3 rounded inline-block ">ABOUT</p>
+              </li>
+            </NavLink>
+            <NavLink to="/contact" onClick={() => setShowMenu(false)}>
+              <li className="py-1">
+                <p className="px-4 py-3 rounded inline-block ">CONTACT</p>
+              </li>
+            </NavLink>
+          </ul>
+        </div>
       </div>
     </div>
   );

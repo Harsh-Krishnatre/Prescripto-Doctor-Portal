@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+*{
+  font-family: Outfit;
+}
+
+@theme{
+  --color-primary:#5f6FFF;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  @apply hidden
+}
+
+.toggle-checkbox:checked + .toggle-label .toggle-circle {
+  transform: translateX(100%);
+  background-color: #4CAF50; /* Green when checked */
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #c8e6c9; /* Lighter green background when checked */
+}
+
