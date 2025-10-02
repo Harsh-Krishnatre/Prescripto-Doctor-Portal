@@ -1,13 +1,52 @@
 import React, { useState } from "react";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
+import axios from 'axios'
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+
+
+  const { backendUrl, uToken, setUToken } = useContext(AppContext)
+  const navigate = useNavigate('')
+
   const [state, setState] = useState("Sign Up");
+
   const [email, setEmail] = useState("");
   const [password, setPaswword] = useState("");
   const [name, setName] = useState("");
 
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+
+    try {
+      if(state === "Sign Up"){
+        const {data} = await axios.post(backendUrl+'/api/user/register',{name,password,email})
+        if(data.success){
+          localStorage.setItem('uToken',data.uToken)
+          setUToken(data.uToken)
+        }else{
+          return toast.error(data.message)
+          setState("Login")
+        }
+
+      }else{
+        const {data} = await axios.post(backendUrl+'/api/user/login',{password,email})
+        if(data.success){
+          localStorage.setItem('uToken',data.uToken)
+          setUToken(data.uToken)
+        }else{
+          return  toast.error(data.message)
+          
+        }
+        navigate('/');
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+
   };
 
   return (
@@ -65,7 +104,6 @@ const Login = () => {
                 id="password"
                 name="password"
                 value={password}
-                // Corrected typo from setPaswword to setPassword
                 onChange={(e) => setPaswword(e.target.value)}
                 className="h-9 px-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
@@ -73,7 +111,6 @@ const Login = () => {
 
             <button
               type="submit"
-              // Reduced top margin from mt-4 to mt-3
               className="bg-primary hover:bg-black transition-colors duration-300 cursor-pointer mt-3 py-2 rounded-md text-white font-semibold"
             >
               {state === "Sign Up" ? "Create Account" : "Login"}

@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { AdminContext } from "../../context/AdminContext";
 
 const DoctorsList = () => {
-  const { doctors, aToken, getAllDoctors } = useContext(AdminContext);
+  const { doctors, aToken, getAllDoctors, changeAvailablity } = useContext(AdminContext);
 
   useEffect(() => {
     if (aToken) {
@@ -25,6 +25,7 @@ const DoctorsList = () => {
                   <span>Available</span>
                   <label className="flex cursor-pointer items-center">
                     <input
+                     onChange={()=>changeAvailablity(item._id)}
                       type="checkbox"
                       checked={item.available}
                       className="toggle-checkbox sr-only"

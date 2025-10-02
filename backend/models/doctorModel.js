@@ -13,6 +13,7 @@ const doctorSchema = new mongoose.Schema({
   address: { type: Object, default: {} }, 
   date: { type: Date, default: Date.now }, 
   slots_booked: { type: Object, default: {} },
+  available:{type:Boolean,default:false},
 },{minimize:false});
 
 

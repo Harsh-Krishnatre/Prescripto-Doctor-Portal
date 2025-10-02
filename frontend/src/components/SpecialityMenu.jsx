@@ -9,17 +9,20 @@ const SpecialityMenu = () => {
       <p className="text-sm text-stone-600 text-center sm:w-2/5">
         Simply browse through our extensive list of trusted doctors, schedule your appointment hassle-free.
       </p>
-      <div className="flex sm:justify-center pt-5 gap-4 w-full overflow-scroll ">
+      {/*
+        FIX: Added 'flex-wrap' to allow items to wrap on smaller screens.
+        Changed 'sm:justify-center' to 'justify-center' for consistent centering.
+      */}
+      <div className="flex flex-wrap justify-center items-center pt-5 gap-4 w-full">
         {specialityData.map((item, index) => {
           return (
             <Link
               to={`/doctors/${item.speciality}`}
-              onClick={()=>scrollTo(0,0)}
-              className="flex flex-col items-center text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500  "
+              onClick={() => window.scrollTo(0, 0)}
+              className="flex flex-col items-center text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500"
               key={index}
             >
-              <img className="w-16 sm:24 mb-2 " src={item.image} alt="" />
-              <br />
+              <img className="w-16 sm:w-24 mb-2" src={item.image} alt={item.speciality} />
               <p className="text-sm">{item.speciality}</p>
             </Link>
           );

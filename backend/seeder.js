@@ -36,6 +36,7 @@ const doctors = [
       line1: "17th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Emily Larson",
@@ -52,6 +53,7 @@ const doctors = [
       line1: "27th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Sarah Patel",
@@ -68,6 +70,7 @@ const doctors = [
       line1: "37th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Christopher Lee",
@@ -84,6 +87,7 @@ const doctors = [
       line1: "47th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Jennifer Garcia",
@@ -100,6 +104,7 @@ const doctors = [
       line1: "57th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Andrew Williams",
@@ -116,6 +121,7 @@ const doctors = [
       line1: "57th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Christopher Davis",
@@ -132,6 +138,7 @@ const doctors = [
       line1: "17th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Timothy White",
@@ -148,6 +155,7 @@ const doctors = [
       line1: "27th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Ava Mitchell",
@@ -164,6 +172,7 @@ const doctors = [
       line1: "37th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Jeffrey King",
@@ -180,6 +189,7 @@ const doctors = [
       line1: "47th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Zoe Kelly",
@@ -196,6 +206,7 @@ const doctors = [
       line1: "57th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Patrick Harris",
@@ -212,6 +223,7 @@ const doctors = [
       line1: "57th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Chloe Evans",
@@ -228,6 +240,7 @@ const doctors = [
       line1: "17th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Ryan Martinez",
@@ -244,6 +257,7 @@ const doctors = [
       line1: "27th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
   {
     name: "Dr. Amelia Hill",
@@ -260,6 +274,7 @@ const doctors = [
       line1: "37th Cross, Richmond",
       line2: "Circle, Ring Road, London",
     },
+    available:true,
   },
 ];
 
