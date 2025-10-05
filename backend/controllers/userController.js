@@ -212,18 +212,18 @@ const cancelAppointment = async(req,res)=>{
   }
 }
 
-const razorPayInstance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// const razorPayInstance = new Razorpay({
+//   key_id: process.env.RAZORPAY_KEY_ID,
+//   key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
 
 // api to make payment
-const paymentRazorPay = async(req,res)=>{
-  try {
+// const paymentRazorPay = async(req,res)=>{
+//   try {
     
-  } catch (error) {
+//   } catch (error) {
     
-  }
-}
+//   }
+// }
 
 export { userRegister, userLogin, getUser, userUpdate, bookAppointment, getUserAppointments, cancelAppointment };
