@@ -70,7 +70,7 @@ const AppContextProvider = (props) => {
   }, []);
 
   const value = {
-    doctors,
+    doctors,getDoctors,
     currencySymbol,
     uToken,
     setUToken: saveToken, // Expose the saveToken function to your components

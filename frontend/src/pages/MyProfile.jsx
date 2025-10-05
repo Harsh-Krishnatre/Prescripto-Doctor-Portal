@@ -175,7 +175,6 @@ setIsEdit(false);
             className="bg-primary text-white font-bold px-6 py-3 rounded-full hover:bg-primary/80 transition-colors shadow-sm flex items-center gap-2"
             onClick={() => setIsEdit(true)}
           >
-            <img src={assets.edit_icon} className="w-4"/> 
             Edit Profile
           </button>
         )}

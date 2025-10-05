@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
 import { useHorizontalScroll } from "../hooks/HorizontalScroll";
 import RelatedDoctors from "../components/RelatedDoctors";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 // ## Component 1: DoctorInfo
 // Displays the doctor's information card.
@@ -49,8 +51,6 @@ const DoctorInfo = ({ docInfo }) => {
   );
 };
 
-// ## Component 2: DateSelector
-// Renders the horizontally scrolling date tabs.
 const DateSelector = ({ docSlots, selectedDateIndex, onDateSelect }) => {
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
@@ -76,8 +76,6 @@ const DateSelector = ({ docSlots, selectedDateIndex, onDateSelect }) => {
   );
 };
 
-// ## Component 3: TimeSlots
-// Renders the available time slots for the selected date.
 const TimeSlots = ({ slots, selectedTime, onTimeSelect }) => {
   const scrollRef = useHorizontalScroll();
 
@@ -111,80 +109,112 @@ const TimeSlots = ({ slots, selectedTime, onTimeSelect }) => {
   );
 };
 
+// Skeleton Loader component to prevent layout shift
+const DoctorInfoSkeleton = () => (
+    <div className="relative gap-4 flex flex-col md:flex-row animate-pulse">
+      <div className="w-full md:w-1/4 h-48 bg-gray-200 rounded-xl"></div>
+      <div className="flex flex-col gap-4 md:w-3/4 border border-gray-300 rounded-lg p-8">
+        <div className="h-6 w-1/2 bg-gray-200 rounded"></div>
+        <div className="h-4 w-1/3 bg-gray-200 rounded"></div>
+        <div className="h-3 w-1/4 bg-gray-200 rounded mt-2"></div>
+        <div className="h-3 w-full bg-gray-200 rounded"></div>
+        <div className="h-3 w-5/6 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+);
+
 // ## Main Component: Appointments
-// Manages state and orchestrates the child components.
 const Appointments = () => {
   const { docId } = useParams();
-  const { doctors } = useContext(AppContext);
+  const { doctors, backendUrl, getDoctors } = useContext(AppContext);
 
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [selectedDateIndex, setSelectedDateIndex] = useState(0);
   const [selectedTime, setSelectedTime] = useState("");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const findDoctor = () => {
-      const doc = doctors.find((d) => d._id === docId);
-      setDocInfo(doc);
-    };
-    findDoctor();
-  }, [doctors, docId]);
+  const bookAppointment = async () => {
+    if (!selectedTime) {
+      return toast.warn("Please select a time slot.");
+    }
+    try {
+      const dates = docSlots[selectedDateIndex][0].dateTime;
+      const slotdate = `${dates.getDate()}-${dates.getMonth() + 1}-${dates.getFullYear()}`;
 
-  useEffect(() => {
-    const getAvailableSlots = () => {
-      if (!docInfo) return;
+      const { data } = await axios.post(
+        `${backendUrl}/api/user/book-appointment`,
+        { docId, slotDate: slotdate, slotTime: selectedTime }
+      );
 
-      const allSlots = [];
-      for (let i = 0; i < 7; i++) {
-        const day = new Date();
-        day.setDate(day.getDate() + i);
-
-        const startTime = new Date(day);
-        startTime.setHours(10, 0, 0, 0);
-
-        const endTime = new Date(day);
-        endTime.setHours(21, 0, 0, 0);
-
-        if (i === 0) {
-          const now = new Date();
-          const nextHour =
-            now.getMinutes() < 30 ? now.getHours() : now.getHours() + 1;
-          const nextMinute = now.getMinutes() < 30 ? 30 : 0;
-          startTime.setHours(nextHour, nextMinute, 0, 0);
-        }
-
-        const timeSlots = [];
-        while (startTime < endTime) {
-          timeSlots.push({
-            dateTime: new Date(startTime),
-            time: startTime.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-          });
-          startTime.setMinutes(startTime.getMinutes() + 30);
-        }
-
-        if (timeSlots.length > 0) {
-          allSlots.push(timeSlots);
-        }
+      if (data.success) {
+        toast.success(data.message);
+        getDoctors(); // Refresh doctor data to update slots
+        navigate("/my-appointments");
+      } else {
+        toast.error(data.message);
       }
-      setDocSlots(allSlots);
-    };
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred while booking.");
+      console.log(error);
+    }
+  };
+  
+  // ✅ FIX: Combined useEffect to prevent cascading re-renders and layout shift
+  useEffect(() => {
+    if (doctors.length > 0) {
+      const doc = doctors.find((d) => d._id === docId);
+      if (doc) {
+        setDocInfo(doc);
+        
+        // Calculate slots right after finding the doctor
+        const allSlots = [];
+        for (let i = 0; i < 7; i++) {
+          const day = new Date();
+          day.setDate(day.getDate() + i);
+          
+          const startTime = new Date(day);
+          startTime.setHours(10, 0, 0, 0);
+          
+          const endTime = new Date(day);
+          endTime.setHours(21, 0, 0, 0);
 
-    getAvailableSlots();
-  }, [docInfo]);
+          if (i === 0) {
+            const now = new Date();
+            const nextHour = now.getMinutes() < 30 ? now.getHours() : now.getHours() + 1;
+            const nextMinute = now.getMinutes() < 30 ? 30 : 0;
+            startTime.setHours(nextHour, nextMinute, 0, 0);
+          }
 
+          const timeSlots = [];
+          while (startTime < endTime) {
+            const formattedTime = startTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            const slotDate = `${startTime.getDate()}-${startTime.getMonth() + 1}-${startTime.getFullYear()}`;
+            const isBooked = doc.slots_booked && doc.slots_booked[slotDate] && doc.slots_booked[slotDate].includes(formattedTime);
+
+            if (!isBooked) {
+              timeSlots.push({ dateTime: new Date(startTime), time: formattedTime });
+            }
+            startTime.setMinutes(startTime.getMinutes() + 30);
+          }
+          if (timeSlots.length > 0) allSlots.push(timeSlots);
+        }
+        setDocSlots(allSlots);
+      }
+    }
+  }, [doctors, docId]);
+  
+  // ✅ FIX: Use Skeleton Loader to prevent layout shift during loading
   if (!docInfo) {
     return (
-      <div className="p-8 text-center">
-        <p>Loading doctor information...</p>
+      <div className="p-8">
+        <DoctorInfoSkeleton />
       </div>
     );
   }
 
   return (
-    <div className="mb-20 ">
+    <div className="mb-20">
       <DoctorInfo docInfo={docInfo} />
 
       <div className="sm:ml-72 sm:pl-4 mt-4 flex flex-col font-medium text-gray-700 overflow-hidden">
@@ -202,13 +232,16 @@ const Appointments = () => {
           selectedTime={selectedTime}
           onTimeSelect={setSelectedTime}
         />
-        <button className="bg-primary my-6 py-3 px-6 max-w-[500px] lg:w-1/3 text-white font-light text-sm rounded-full cursor-pointer">
+        <button
+          onClick={bookAppointment}
+          className="bg-primary my-6 py-3 px-6 max-w-[500px] lg:w-1/3 text-white font-light text-sm rounded-full cursor-pointer"
+        >
           Book an appointment
         </button>
       </div>
-      <RelatedDoctors docId = {docId} speciality={docInfo.speciality}/>
+      <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
     </div>
   );
 };
 
-export default Appointments;
+export default Appointments;  

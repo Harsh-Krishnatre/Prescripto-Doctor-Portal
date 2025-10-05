@@ -2,6 +2,8 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
+import doctorModel from "../models/doctorModel.js";
+import appointmentModel from "../models/appointmentModel.js";
 import { v2 as cloudinary } from "cloudinary";
 // api to register user
 
@@ -164,4 +166,64 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-export { userRegister, userLogin, getUser, userUpdate };
+// api to get all user appointments 
+const getUserAppointments = async(req,res)=>{
+  try {
+    const {userId} = req.body;
+    const appointments = await appointmentModel.find({userId}).sort({date:-1});
+    res.json({success:true,appointments});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+// api to cancel appointment
+
+const cancelAppointment = async(req,res)=>{
+  try {
+    const { userId, appointmentId} = req.body;
+    const appointment = await appointmentModel.findById(appointmentId)
+
+    if(!appointment){
+      return res.status(404).json({success:false, message:"Appointment not found"});
+    }
+
+    if(appointment.userId != userId){
+      return res.status(401).json({success:false, message:"You are not authorized to cancel this appointment"});
+    }
+
+    await appointmentModel.findByIdAndUpdate(appointmentId, {cancelled:true});
+
+    const {slotDate , slotTime, docId} = appointment;
+
+    const doctor = await doctorModel.findById(docId);
+    let slots_booked = doctor.slots_booked;
+    if(slots_booked[slotDate]){
+      slots_booked[slotDate] = slots_booked[slotDate].filter(slot => slot !== slotTime);
+    }
+    await doctorModel.findByIdAndUpdate(docId, {slots_booked});
+
+    res.json({success:true, message:"Appointment cancelled successfully"});
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+const razorPayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// api to make payment
+const paymentRazorPay = async(req,res)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+export { userRegister, userLogin, getUser, userUpdate, bookAppointment, getUserAppointments, cancelAppointment };
